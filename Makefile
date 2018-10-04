@@ -15,7 +15,7 @@ build: node_modules
 	tsc -d -m commonjs --outDir lib
 
 release: all
-	git add -A
+	git add lib
 	standard-version -a
 
 node_modules: package.json
