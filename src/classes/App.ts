@@ -7,12 +7,8 @@ const unpack = <C extends Context>(mwOrApp: Middleware<C> | App<C>) =>
 const ifMatches = (path: string): MiddlewareWrapper => mw => (ctx, next) =>
   ctx.path.startsWith(path) ? mw(ctx, next) : next()
 
-const inBase = (base: string): MiddlewareWrapper => mw => (ctx, next) => {
-  const ctxʹ = Object.create(ctx)
-  ctxʹ.base = base
-  ctxʹ.path = ctx.path.slice(base.length - 1)
-  return mw(ctxʹ, next)
-}
+const inBase = (base: string): MiddlewareWrapper => mw => (ctx, next) =>
+  mw(Object.assign(Object.create(ctx), { base, path: ctx.path.slice(base.length - 1) }), next)
 
 export class App<C extends Context> {
   readonly handler: RequestHandler
