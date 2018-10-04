@@ -104,8 +104,10 @@ import { Server } from 'http'
 
 class ExtendedContext extends Context {
   send(data: any, code = 200) {
-    this.res.writeHead(code)
-    return new Promise<void>(ok => this.res.end(data, ok))
+    return new Promise<void>(ok => {
+      this.res.writeHead(code)
+      this.res.end(data, ok)
+    })
   }
 }
 
