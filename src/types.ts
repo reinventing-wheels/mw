@@ -1,6 +1,9 @@
 import { IncomingMessage, ServerResponse } from 'http'
 import { Context } from './classes/Context'
 
+export type Has<T, K extends keyof T> =
+  Pick<T, Exclude<keyof T, K>> & Required<Pick<T, K>>
+
 export type ContextConstructor<C extends Context> =
   new (req: IncomingMessage, res: ServerResponse) => C
 
