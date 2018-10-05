@@ -3,9 +3,13 @@ import { UrlWithParsedQuery, parse } from 'url'
 import { Has } from '../types'
 
 export class Context {
-  readonly url = parse(decodeURI(this.req.url!), true) as Has<UrlWithParsedQuery, 'pathname' | 'path' | 'href'>
-  readonly path = this.url.pathname
-  readonly base = '/' as string
+  readonly url: Has<UrlWithParsedQuery, 'href' | 'path' | 'pathname'>
+  readonly path: string
+  readonly base: string
 
-  constructor(readonly req: IncomingMessage, readonly res: ServerResponse) {}
+  constructor(readonly req: IncomingMessage, readonly res: ServerResponse) {
+    this.url = parse(decodeURI(req.url!), true) as Required<UrlWithParsedQuery>
+    this.path = this.url.pathname
+    this.base = '/'
+  }
 }
