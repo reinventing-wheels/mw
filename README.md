@@ -1,4 +1,4 @@
-A small middleware framework in less than 100 lines of code.
+A small middleware framework in less than 100 lines of code
 
 ## Installation
 
