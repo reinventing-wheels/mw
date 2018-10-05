@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.3.0"></a>
+# [0.3.0](https://github.com/reinventing-wheels/mw/compare/v0.2.0...v0.3.0) (2018-10-05)
+
+
+### Features
+
+* add `Context::url`, make `Context::path` to not contain query string ([398b87e](https://github.com/reinventing-wheels/mw/commit/398b87e))
+
+
+
 <a name="0.2.0"></a>
 # [0.2.0](https://github.com/reinventing-wheels/mw/compare/v0.1.0...v0.2.0) (2018-10-04)
 
