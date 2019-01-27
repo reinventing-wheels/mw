@@ -11,17 +11,17 @@ yarn add reinventing-wheels/mw
 ### Basics
 
 ```ts
-import { App, Context } from 'mw'
+import { Stack, Context } from 'mw'
 import { Server } from 'http'
 
-const app = new App(Context)
+const app = new Stack(Context)
 
-app.use(async (ctx, next) => {
+app.push(async (ctx, next) => {
   console.log(`${ctx.req.method} ${ctx.req.url}`)
   await next()
 })
 
-app.use(async ctx => {
+app.push(async ctx => {
   ctx.res.end(`hello from ${ctx.path}`)
 })
 
@@ -31,16 +31,16 @@ new Server(app.handler).listen(8080)
 ### Routes
 
 ```ts
-import { App, Context } from 'mw'
+import { Stack, Context } from 'mw'
 import { Server } from 'http'
 
-const app = new App(Context)
+const app = new Stack(Context)
 
-app.mount('/doge', async ctx => {
+app.push('/doge', async ctx => {
   ctx.res.end('wow much doge')
 })
 
-app.mount('/', async ctx => {
+app.push('/', async ctx => {
   ctx.res.end('wow such 404')
 })
 
@@ -50,20 +50,19 @@ new Server(app.handler).listen(8080)
 ### Nested routes
 
 ```ts
-import { App, Context } from 'mw'
+import { Stack, Context } from 'mw'
 import { Server } from 'http'
 
-const bar = new App(Context)
-const foo = new App(Context)
-const app = new App(Context)
+const bar = new Stack(Context)
+  .push('/', async ctx => ctx.res.end('bar')) // /foo/bar/…
 
-bar.mount('/', async ctx => ctx.res.end(`bar:${ctx.path}`)) // /foo/bar/…
+const foo = new Stack(Context)
+  .push('/bar/', bar)
+  .push('/', async ctx => ctx.res.end('foo')) // /foo/…
 
-foo.mount('/bar/', bar)
-foo.mount('/', async ctx => ctx.res.end(`foo:${ctx.path}`)) // /foo/…
-
-app.mount('/foo/', foo)
-app.mount('/', async ctx => ctx.res.end(`app:${ctx.path}`)) // /…
+const app = new Stack(Context)
+  .push('/foo/', foo)
+  .push('/', async ctx => ctx.res.end('app')) // /…
 
 new Server(app.handler).listen(8080)
 ```
@@ -71,12 +70,12 @@ new Server(app.handler).listen(8080)
 ### Error handling
 
 ```ts
-import { App, Context } from 'mw'
+import { Stack, Context } from 'mw'
 import { Server } from 'http'
 
-const app = new App(Context)
+const app = new Stack(Context)
 
-app.use(async (ctx, next) => {
+app.push(async (ctx, next) => {
   try {
     await next()
   }
@@ -86,7 +85,7 @@ app.use(async (ctx, next) => {
   }
 })
 
-app.use(async ctx => {
+app.push(async ctx => {
   if (Math.random() < 1/13) {
     throw new Error(':^(')
   }
@@ -99,7 +98,7 @@ new Server(app.handler).listen(8080)
 ### Extending context
 
 ```ts
-import { App, Context } from 'mw'
+import { Stack, Context } from 'mw'
 import { Server } from 'http'
 
 class ExtendedContext extends Context {
@@ -111,9 +110,9 @@ class ExtendedContext extends Context {
   }
 }
 
-const app = new App(ExtendedContext)
+const app = new Stack(ExtendedContext)
 
-app.use(async ctx => {
+app.push(async ctx => {
   await ctx.send('want some tea?', 418)
 })
 

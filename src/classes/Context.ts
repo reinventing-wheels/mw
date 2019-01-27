@@ -2,14 +2,13 @@ import { IncomingMessage, ServerResponse } from 'http'
 import { UrlWithParsedQuery, parse } from 'url'
 import { Has } from '../types'
 
-export class Context {
-  readonly url: Has<UrlWithParsedQuery, 'href' | 'path' | 'pathname'>
-  readonly path: string
-  readonly base: string
+const parsePath = (path: string): Has<UrlWithParsedQuery, 'href' | 'path' | 'pathname'> =>
+  parse(decodeURI(path), true) as Required<UrlWithParsedQuery>
 
-  constructor(readonly req: IncomingMessage, readonly res: ServerResponse) {
-    this.url = parse(decodeURI(req.url!), true) as Required<UrlWithParsedQuery>
-    this.path = this.url.pathname
-    this.base = '/'
-  }
+export class Context {
+  readonly url = parsePath(this.req.url!)
+  readonly path = this.url.pathname
+  readonly base = '/' as string
+
+  constructor(readonly req: IncomingMessage, readonly res: ServerResponse) {}
 }
