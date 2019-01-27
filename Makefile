@@ -6,7 +6,7 @@ lint: node_modules
 	tslint -p .
 
 test: node_modules
-	# jest
+	jest
 
 clean:
 	rm -rf lib
